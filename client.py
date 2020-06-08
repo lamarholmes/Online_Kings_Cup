@@ -9,6 +9,21 @@ height = 700
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Kings Cup Client")
 
+meaning = {
+    "Ace": "Waterfall",
+    2: "You",
+    3: "Me",
+    4: "Women",
+    5: "Drive",
+    6: "Men",
+    7: "Heaven",
+    8: "Date",
+    9: "Rhyme",
+    10: "Categories",
+    "Jack": "Social",
+    "Queen": "Questions",
+    "King": "Kings Cup"
+}
 
 class Button:
     def __init__(self, text, x, y, color):
@@ -67,16 +82,21 @@ def redrawWindow(win, CardDeck, p):
         win.blit(card_deck, (290, 40))
 
         last_card = font.render(f"last card played: {CardDeck.last_played}", 1, (0, 255, 255))
-        win.blit(last_card, (250, 500))
+        win.blit(last_card, (200, 350))
+
+        if CardDeck.last_played:
+            font4 = pygame.font.SysFont("Aerial", 60)
+            card_meaning = font4.render(meaning[list(CardDeck.last_played.values())[0]], 1, (0, 255, 255))
+            win.blit(card_meaning, (250, 250))
 
         if CardDeck.whoWent is None:
             move = CardDeck.whosTurn()
             if p == move:
-                go_text = font2.render(f"Your Pull", 1, (0, 255, 255))
+                go_text = font.render(f"Your Pull", 1, (0, 255, 255))
                 win.blit(go_text, (300, 400))
                 btn.draw(win)
             else:
-                wait_text = font2.render(f"Waiting for player {move} to pull", 1, (0, 255, 255))
+                wait_text = font.render(f"Waiting for player {move} to pull", 1, (0, 255, 255))
                 win.blit(wait_text, (300, 400))
 
     pygame.display.update()
@@ -136,7 +156,11 @@ def main():
                         n.send("pull_card")
                         card_pulled = cardDeck.last_played
                         card_text = font2.render(json.dumps(card_pulled), 1, (0, 255, 255))
+                        print(card_pulled)
                         win.blit(card_text, (250, 400))
+
+
+
                 else:
                     n.send("get")
 
